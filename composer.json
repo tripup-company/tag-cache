@@ -21,5 +21,12 @@
         "psr-4": {
             "TripUp\\Cache\\": "src/"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "TripUp\\Cache\\TagCacheServiceProvider"
+            ]
+        }
     }
 }
