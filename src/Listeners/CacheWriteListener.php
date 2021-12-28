@@ -3,6 +3,7 @@ namespace TripUp\Cache\Listeners;
 
 use Illuminate\Cache\Events\KeyWritten;
 use Spatie\ResponseCache\Serializers\Serializer;
+use TripUp\Cache\Contracts\ResponseTagResolver;
 use TripUp\Cache\Tags\ProductsCollectionTags;
 
 class CacheWriteListener
@@ -12,13 +13,18 @@ class CacheWriteListener
      */
     protected $serializer;
     /**
+     * @var ResponseTagResolver
+     */
+    protected $resolver;
+    /**
      * Create the event listener.
      *
      * @return void
      */
-    public function __construct(Serializer $serializer)
+    public function __construct(Serializer $serializer, ResponseTagResolver $resolver)
     {
         $this->serializer = $serializer;
+        $this->resolver = $resolver;
     }
 
     /**
@@ -32,10 +38,10 @@ class CacheWriteListener
         if (!$this->isResponseCacheEvent($event)) {
             return;
         }
-        $data = $this->serializer->unserialize($event->value);
-        $tagable = new ProductsCollectionTags($data);
+        $response = $this->serializer->unserialize($event->value);
+        $tags = $this->resolver->resolveTags($response);
         \Debugbar::debug($event->key);
-        \Debugbar::debug($tagable->getTags());
+        \Debugbar::debug($tags);
 
     }
 
