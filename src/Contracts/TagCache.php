@@ -9,7 +9,7 @@ interface TagCache
      * @param string $responseCacheKey
      * @return bool
      */
-    public function put(Tag $tag, string $responseCacheKey): bool;
+    public function put($tags, string $responseCacheKey): bool;
 
     /**
      * @param Tag|Tag[] $tags

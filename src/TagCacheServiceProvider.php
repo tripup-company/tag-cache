@@ -6,6 +6,7 @@ use Illuminate\Container\Container;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use TripUp\Cache\Contracts\ResponseTagResolver;
+use TripUp\Cache\Contracts\TagCache;
 use TripUp\Cache\Listeners\CacheWriteListener;
 
 class TagCacheServiceProvider extends PackageServiceProvider
@@ -14,8 +15,12 @@ class TagCacheServiceProvider extends PackageServiceProvider
     {
         \Event::listen(KeyWritten::class, CacheWriteListener::class);
 
-        $this->app->bind(ResponseTagResolver::class, function (Container $app) {
+        $this->app->singleton(ResponseTagResolver::class, function (Container $app) {
             return $app->make(config('tagcache.tag_resolver'));
+        });
+
+        $this->app->singleton(TagCache::class, function (Container $app) {
+            return $app->make(config('tagcache.tag_store'));
         });
 
     }
